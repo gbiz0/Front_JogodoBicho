@@ -5,26 +5,30 @@
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --background-end-rgb: 0, 0, 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+@media (max-width: 768px) {
+  body {
+    background-size: contain; /* Ajusta a imagem para caber dentro do contêiner em telas menores */
   }
 }
 
+
 body {
-  color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,
       transparent,
       rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+    ),
+    url('/tela_inicial.png');
+  background-size: cover; /* Ajusta a imagem para cobrir toda a tela */
+  background-repeat: no-repeat; /* Evita que a imagem se repita */
+  background-position: center; /* Centraliza a imagem */
+  color: rgb(var(--foreground-rgb));
+  min-height: 100vh; /* Garante que o corpo ocupe a altura total da tela */
 }
+
 
 @layer utilities {
   .text-balance {
