@@ -1,9 +1,7 @@
-"use client";
+'use client';
 
-import { FC, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState, AppDispatch } from "../../../store/store";
-import { fetchContraventor } from "../../../store/slices/contraventorSlice";
+import { FC, useEffect, useState } from 'react';
+import api from '../../utils/axios';
 import {
   Button,
   Table,
@@ -13,27 +11,57 @@ import {
   TableHead,
   TableRow,
   Paper,
-} from "@mui/material";
-import { useRouter } from "next/navigation";
+  IconButton,
+} from '@mui/material';
+import { useRouter } from 'next/navigation';
+import { Edit, Delete } from '@mui/icons-material'; // Importe os ícones
+
+interface Contraventor {
+  id_cont: number;
+  nome_cont: string;
+  tipo_cont: string;
+  login: string;
+  cpf_cont: string;
+}
 
 const ListContraventores: FC = () => {
-  // const dispatch: AppDispatch = useDispatch();
-  // const contraventores = useSelector((state: RootState) => state.contraventor.contraventor);
-  // const status = useSelector((state: RootState) => state.contraventor.status);
+  const [contraventores, setContraventores] = useState<Contraventor[]>([]);
   const router = useRouter();
 
-  // useEffect(() => {
-  //   if (status === 'idle') {
-  //     dispatch(fetchContraventor());
-  //   }
-  // }, [dispatch, status]);
+  const fetchContraventores = async () => {
+    try {
+      const response = await api.get<Contraventor[]>('/contraventor/selectAll');
+      setContraventores(response.data);
+    } catch (error) {
+      console.error('Erro ao buscar contraventores:', error);
+      alert('Falha ao carregar contraventores.');
+    }
+  };
 
-  // const handleEdit = (id: number) => {
-  //   router.push(`/contraventor/edit/${id}`);
-  // };
+  useEffect(() => {
+    fetchContraventores();
+  }, []);
+
+  const handleEdit = (id: number) => {
+    router.push(`/contraventor/edit/${id}`);
+  };  
+
+  const handleDelete = async (id: number) => {
+    const confirmDelete = window.confirm("Tem certeza que deseja excluir este contraventor?");
+    if (confirmDelete) {
+      try {
+        await api.delete(`/contraventor/delete/${id}`);
+        alert("Contraventor excluído com sucesso!");
+        fetchContraventores();
+      } catch (error) {
+        console.error("Erro ao excluir contraventor:", error);
+        alert("Falha ao excluir contraventor.");
+      }
+    }
+  };
 
   const handleCadastrar = () => {
-    router.push("/contraventor/create");
+    router.push('/contraventor/create');
   };
 
   return (
@@ -56,7 +84,25 @@ const ListContraventores: FC = () => {
               <TableCell>Ações</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>{/* Dados aqui */}</TableBody>
+          <TableBody>
+            {contraventores.map((contraventor) => (
+              <TableRow key={contraventor.id_cont}>
+                <TableCell>{contraventor.id_cont}</TableCell>
+                <TableCell>{contraventor.nome_cont}</TableCell>
+                <TableCell>{contraventor.tipo_cont}</TableCell>
+                <TableCell>{contraventor.login}</TableCell>
+                <TableCell>{contraventor.cpf_cont}</TableCell>
+                <TableCell>
+                  <IconButton onClick={() => handleEdit(contraventor.id_cont)}>
+                    <Edit />
+                  </IconButton>
+                  <IconButton onClick={() => handleDelete(contraventor.id_cont)}>
+                    <Delete />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
         </Table>
       </TableContainer>
     </div>
