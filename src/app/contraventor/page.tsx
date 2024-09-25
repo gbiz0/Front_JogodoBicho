@@ -43,7 +43,8 @@ const ListContraventores: FC = () => {
   }, []);
 
   const handleEdit = (id: number) => {
-    router.push(`/contraventor/edit/${id}`);
+    console.log(`Navegando para /contraventor/edit/${id}`); // Para debugar
+    router.push(`/contraventor/edit/${id}`); // Redireciona para a página de edição do contraventor
   };  
 
   const handleDelete = async (id: number) => {

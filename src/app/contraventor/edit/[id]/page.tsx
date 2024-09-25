@@ -39,6 +39,7 @@ const EditContraventor: FC<{ params: { id: string } }> = ({ params }) => {
   const fetchContraventor = async () => {
     try {
       const response = await api.get(`/contraventor/select/${params.id}`);
+      console.log(response.data);
       setContraventor(response.data);
       setNomeCont(response.data.nome_cont);
       setTipoCont(response.data.tipo_cont);
@@ -66,7 +67,7 @@ const EditContraventor: FC<{ params: { id: string } }> = ({ params }) => {
     };
 
     try {
-      await api.post(`/contraventor/edit/${params.id}`, updatedContraventor);
+      await api.put(`/contraventor/edit/${params.id}`, updatedContraventor);
       alert('Contraventor atualizado com sucesso!');
       router.push('/contraventor/');
     } catch (error) {
